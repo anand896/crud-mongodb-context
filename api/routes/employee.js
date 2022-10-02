@@ -1,5 +1,31 @@
 const router = require("express").Router();
 const Employee = require("../model/employee")
+const multer = require('multer');
+
+const storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, './uploads/');
+  },
+  filename: function(req, file, cb) {
+    cb(null, new Date().toISOString().replace(/:/g, '-') + file.originalname);
+  }
+});
+
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/jpg' || file.mimetype === 'image/png') {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 1024 * 1024 * 5
+  },
+  fileFilter: fileFilter
+});
 
 
 router.get("/", async (req, res, next) => {
@@ -21,9 +47,10 @@ router.get("/:id", async (req, res, next) => {
     }
 });
 
-router.post("/", async (req, res, next) => {
+router.post("/", upload.single('photo'), async (req, res, next) => {
     const employee = new Employee({
-        ...req.body
+        ...req.body,
+        photo: req.file.path
     })
 
     try{
@@ -34,20 +61,18 @@ router.post("/", async (req, res, next) => {
     }
 });
 
-router.put("/:id", async (req, res, next) => {
-    
-    // res.json(req.body);
+router.put("/:id", upload.single('photo'), async (req, res, next) => {
     let update = {
         name: req.body.name,
         age: req.body.age,
         email: req.body.email,
         dateOfBirth: req.body.dateOfBirth,
         address: req.body.address,
-        photo: req.body.photo
+        photo: req.file.path
     }
 
     try{
-        let data = await Employee.findOneAndUpdate({_id: req.params.id}, {update});
+        let data = await Employee.findOneAndUpdate({_id: req.params.id}, {...update});
         res.json(data)
     }catch(err){
         res.send(err)
@@ -63,6 +88,5 @@ router.delete("/:id", async (req, res, next) => {
         res.send(err)
     }
 });
-
 
 module.exports = router;

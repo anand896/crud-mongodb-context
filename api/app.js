@@ -5,6 +5,9 @@ require('dotenv').config()
 
 const connection = require("./model")
 
+
+app.use('/uploads', express.static('uploads'));
+
 // MeadleWares
 app.use(cors());
 app.use(express.json());
