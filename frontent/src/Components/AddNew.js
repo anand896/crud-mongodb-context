@@ -14,10 +14,10 @@ const Home = () => {
             age: '',
             email:'',
             dateOfBirth:'',
-            address:'',
-            photo:''
+            address:''
         });
     const [alertMsg, setAlertMsg] = useState({message : '', variant: ''});
+    const [photo, setPhoto] = useState(null);
 
 
     const employee_name = useRef(null);
@@ -29,12 +29,14 @@ const Home = () => {
 
 
     let addNewemployeeAction = (evt) => {
-        if(employeeDetails.name === "" || employeeDetails.age === ""
-        || employeeDetails.email === "" || employeeDetails.dateOfBirth === ""
-        || employeeDetails.address === "" || employeeDetails.photo === ""){
+        if(
+            employeeDetails.name === "" || employeeDetails.age === ""
+         || employeeDetails.email === "" || employeeDetails.dateOfBirth === ""
+        || employeeDetails.address === "" || employeeDetails.photo === ""
+        ){
             setAlertMsg({...alertMsg, message:'Please fill all required fields', variant: 'danger'});
         }else{
-           addEmployee(employeeDispatch, {...employeeDetails});
+           addEmployee(employeeDispatch, {...employeeDetails}, photo);
            employee_name.current.value = '';
            employee_age.current.value = '';
            employee_email.current.value = '';
@@ -44,6 +46,7 @@ const Home = () => {
            setAlertMsg({...alertMsg, message:'New Employee Added Successfully', variant: 'success'});
         }
     }
+
 
 
   return (
@@ -77,7 +80,7 @@ const Home = () => {
                             </Form.Group>
                             <Form.Group controlId="employee_photo">
                                 <Form.Label>Photo</Form.Label>
-                                <Form.Control type="text" ref={employee_photo} defaultValue={employeeDetails.photo} onChange={(e)=>setEmployeeDetails({...employeeDetails, photo:e.target.value})} placeholder="Employee Photo" />
+                                <Form.Control type="file" ref={employee_photo} onChange={(e)=>setPhoto(e.target.files[0])} placeholder="Employee Photo" />
                             </Form.Group>
                             <br></br>
                             <Button variant="primary" onClick={addNewemployeeAction} type="button">Submit</Button>

@@ -74,13 +74,20 @@ export const getSingleEmployee = async (dispatch, id) => {
 
 
 // Add New Employee
-export const addEmployee = async (dispatch, newEmployee) => {
+export const addEmployee = async (dispatch, newEmployee, photo) => {
   setLoading(dispatch, true);
+  const formData = new FormData();
+  formData.append("name", newEmployee.name);
+  formData.append("age", newEmployee.age);
+  formData.append("email", newEmployee.email);
+  formData.append("dateOfBirth", newEmployee.dateOfBirth);
+  formData.append("address", newEmployee.address);
+  formData.append("photo", photo);
 
   await axios
-    .post(`http://localhost:5000/api/employee`, newEmployee)
+    .post(`http://localhost:5000/api/employee`, formData)
     .then(res => {
-      const result = res;
+      console.log(res);
     })
     .catch(error => {
       const result = error;
@@ -100,10 +107,19 @@ export const addEmployee = async (dispatch, newEmployee) => {
 
 
 // Edit Employee
-export const editEmployee = async (dispatch, updatedEmployee, id) => {
+export const editEmployee = async (dispatch, updatedEmployee, id, photo) => {
   setLoading(dispatch, true);
+
+  const formData = new FormData();
+  if(updatedEmployee.name) formData.append("name", updatedEmployee.name);
+  if(updatedEmployee.age) formData.append("age", updatedEmployee.age);
+  if(updatedEmployee.email) formData.append("email", updatedEmployee.email);
+  if(updatedEmployee.dateOfBirth) formData.append("dateOfBirth", updatedEmployee.dateOfBirth);
+  if(updatedEmployee.address) formData.append("address", updatedEmployee.address);
+  if(photo) formData.append("photo", photo);
+
   await axios
-    .put(`http://localhost:5000/api/employee/${id}`, {...updatedEmployee})
+    .put(`http://localhost:5000/api/employee/${id}`, formData)
     .then(res => {
       const result = res;
     })

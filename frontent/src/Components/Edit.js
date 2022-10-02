@@ -12,21 +12,23 @@ const Edit = () => {
     const { employee, loading, error, message } = employeeState;
 
     let { userId } = useParams();
+    
 
-console.log(userId)
     const [employeeDetails, setEmployeeDetails] = useState({
             name : '',
             age: '',
             email:'',
             dateOfBirth:'',
-            address:'',
-            photo:''
+            address:''
         });
     const [alertMsg, setAlertMsg] = useState({message : '', variant: ''});
+    const [photo, setPhoto] = useState(null);
+
+    const employee_photo = useRef(null);
 
     useEffect(() => {
         getSingleEmployee(employeeDispatch, userId);
-        setEmployeeDetails({...employeeDetails, name:employee.name, age:employee.age, email:employee.email,
+        setEmployeeDetails({name:employee.name, age:employee.age, email:employee.email,
             dateOfBirth:employee.dateOfBirth, address:employee.address, photo:employee.photo
         })
     }, []);
@@ -34,11 +36,10 @@ console.log(userId)
 
     let addNewemployeeAction = (evt) => {
         if(employeeDetails.name === "" || employeeDetails.age === ""
-        || employeeDetails.email === "" || employeeDetails.dateOfBirth === ""
-        || employeeDetails.address === "" || employeeDetails.photo === ""){
+        || employeeDetails.email === ""){
             setAlertMsg({...alertMsg, message:'Please fill all required fields', variant: 'danger'});
         }else{
-            editEmployee(employeeDispatch, employeeDetails, userId);
+            editEmployee(employeeDispatch, employeeDetails, userId, photo);
            setAlertMsg({...alertMsg, message:'New Employee Added Successfully', variant: 'success'});
         }
     }
@@ -75,7 +76,7 @@ console.log(userId)
                             </Form.Group>
                             <Form.Group controlId="employee_photo">
                                 <Form.Label>Photo</Form.Label>
-                                <Form.Control type="text" defaultValue={employee.photo} onChange={(e)=>setEmployeeDetails({...employeeDetails, photo:e.target.value})} placeholder="Employee Photo" />
+                                <Form.Control type="file" ref={employee_photo} onChange={(e)=>setPhoto(e.target.files[0])} placeholder="Employee Photo" />
                             </Form.Group>
                             <Button variant="primary" onClick={addNewemployeeAction} type="button">Submit</Button>
                         </Form>
