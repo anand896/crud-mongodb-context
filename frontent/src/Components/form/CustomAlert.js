@@ -20,7 +20,6 @@ const CustomAlert = ({
     )
 }
 
-
 export {
     CustomAlert
 }

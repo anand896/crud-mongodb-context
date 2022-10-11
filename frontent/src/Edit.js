@@ -1,14 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Container, Row, Col, Button, Form } from "react-bootstrap";
-import { CustomAlert } from "./form/CustomAlert";
+import { CustomAlert } from "./Components/form/CustomAlert";
+import { useEmployee } from "./contexts/Employee/EmployeeState";
+import { getSingleEmployee, editEmployee } from "./contexts/Employee/EmployeeAction";
+import { useParams } from 'react-router-dom';
 
-import { useEmployee } from "../contexts/Employee/EmployeeState";
-import { addEmployee, setLoading } from "../contexts/Employee/EmployeeAction";
 
-const Home = () => { 
+const Edit = () => { 
     const [employeeState, employeeDispatch] = useEmployee();
-    const { employee, loading, error, message } = employeeState;
+    const { employee, error } = employeeState;
 
+    let { userId } = useParams();
+    
     const [employeeDetails, setEmployeeDetails] = useState({
             name : '',
             age: '',
@@ -19,36 +22,27 @@ const Home = () => {
     const [alertMsg, setAlertMsg] = useState({message : '', variant: ''});
     const [photo, setPhoto] = useState(null);
 
-
-    const employee_name = useRef(null);
-    const employee_age = useRef(null);
-    const employee_email = useRef(null);
-    const employee_dateOfBirth = useRef(null);
-    const employee_address = useRef(null);
     const employee_photo = useRef(null);
+
+    useEffect(() => {
+        getSingleEmployee(employeeDispatch, userId);
+        setEmployeeDetails({name:employee.name, age:employee.age, email:employee.email,
+            dateOfBirth:employee.dateOfBirth, address:employee.address, photo:employee.photo
+        })
+    }, [employee.name, employee.age, employee.email,
+        employee.dateOfBirth, employee.address, employee.photo, employeeDispatch, userId]);
 
 
     let addNewemployeeAction = (evt) => {
-        if(
-            employeeDetails.name === "" || employeeDetails.age === ""
-         || employeeDetails.email === "" || employeeDetails.dateOfBirth === ""
-        || employeeDetails.address === "" || employeeDetails.photo === ""
-        ){
+        if(employeeDetails.name === "" || employeeDetails.age === ""
+        || employeeDetails.email === ""){
             setAlertMsg({...alertMsg, message:'Please fill all required fields', variant: 'danger'});
         }else{
-           addEmployee(employeeDispatch, {...employeeDetails}, photo);
-           employee_name.current.value = '';
-           employee_age.current.value = '';
-           employee_email.current.value = '';
-           employee_dateOfBirth.current.value = '';
-           employee_address.current.value = '';
-           employee_photo.current.value = '';
-           setAlertMsg({...alertMsg, message:'New Employee Added Successfully', variant: 'success'});
+            editEmployee(employeeDispatch, employeeDetails, userId, photo);
+            if(!error) setAlertMsg({...alertMsg, message:'Updated Successfully', variant: 'success'});
         }
     }
-
-
-
+    
   return (
     <>
             <Container fluid>
@@ -60,29 +54,28 @@ const Home = () => {
                         <Form>
                             <Form.Group controlId="employee_name">
                                 <Form.Label>Name</Form.Label>
-                                <Form.Control type="text" ref={employee_name} defaultValue={employeeDetails.name} onChange={(e)=>setEmployeeDetails({...employeeDetails, name:e.target.value})} placeholder="Employee Name" />
+                                <Form.Control type="text" defaultValue={employeeDetails.name} onChange={(e)=>setEmployeeDetails({...employeeDetails, name:e.target.value})} placeholder="Employee Name" />
                             </Form.Group>
                             <Form.Group controlId="employee_age">
                                 <Form.Label>Age</Form.Label>
-                                <Form.Control type="text" ref={employee_age} defaultValue={employeeDetails.age} onChange={(e)=>setEmployeeDetails({...employeeDetails, age:e.target.value})} placeholder="Employee Age" />
+                                <Form.Control type="text" defaultValue={employeeDetails.age} onChange={(e)=>setEmployeeDetails({...employeeDetails, age:e.target.value})} placeholder="Employee Age" />
                             </Form.Group>
                             <Form.Group controlId="employee_email">
                                 <Form.Label>Email</Form.Label>
-                                <Form.Control type="text" ref={employee_email} defaultValue={employeeDetails.email} onChange={(e)=>setEmployeeDetails({...employeeDetails, email:e.target.value})} placeholder="Employee Email" />
+                                <Form.Control type="text" defaultValue={employeeDetails.email} onChange={(e)=>setEmployeeDetails({...employeeDetails, email:e.target.value})} placeholder="Employee Email" />
                             </Form.Group>
                             <Form.Group controlId="employee_dateOfBirth">
                                 <Form.Label>Date Of Birth</Form.Label>
-                                <Form.Control type="date" ref={employee_dateOfBirth} defaultValue={employeeDetails.dateOfBirth} onChange={(e)=>setEmployeeDetails({...employeeDetails, dateOfBirth:e.target.value})} placeholder="Employee Date Of Birth" />
+                                <Form.Control type="text" defaultValue={employeeDetails.dateOfBirth} onChange={(e)=>setEmployeeDetails({...employeeDetails, dateOfBirth:e.target.value})} placeholder="Employee Date Of Birth" />
                             </Form.Group>
                             <Form.Group controlId="employee_Address">
                                 <Form.Label>Address</Form.Label>
-                                <Form.Control type="text" ref={employee_address} defaultValue={employeeDetails.address} onChange={(e)=>setEmployeeDetails({...employeeDetails, address:e.target.value})} placeholder="Employee Address" />
+                                <Form.Control type="text" defaultValue={employeeDetails.address} onChange={(e)=>setEmployeeDetails({...employeeDetails, address:e.target.value})} placeholder="Employee Address" />
                             </Form.Group>
                             <Form.Group controlId="employee_photo">
                                 <Form.Label>Photo</Form.Label>
                                 <Form.Control type="file" ref={employee_photo} onChange={(e)=>setPhoto(e.target.files[0])} placeholder="Employee Photo" />
                             </Form.Group>
-                            <br></br>
                             <Button variant="primary" onClick={addNewemployeeAction} type="button">Submit</Button>
                         </Form>
                     </Col>
@@ -93,4 +86,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Edit;

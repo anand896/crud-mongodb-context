@@ -51,7 +51,7 @@ router.post("/", upload.single('photo'), async (req, res, next) => {
     try{
         const employee = new Employee({
             ...req.body,
-            photo: req.file.path
+            photo: req?.file?.path
         })
         const data =  await employee.save() 
         res.json(data)
@@ -68,7 +68,7 @@ router.put("/:id", upload.single('photo'), async (req, res, next) => {
             email: req.body.email,
             dateOfBirth: req.body.dateOfBirth,
             address: req.body.address,
-            photo: req.file.path
+            photo: req?.file?.path
         }
     
         let data = await Employee.findOneAndUpdate({_id: req.params.id}, {...update});
@@ -77,7 +77,6 @@ router.put("/:id", upload.single('photo'), async (req, res, next) => {
         res.send(err)
     }
 });
-
 
 router.delete("/:id", async (req, res, next) => {
     try{

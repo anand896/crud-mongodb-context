@@ -8,9 +8,9 @@ import {
 } from "react-router-dom";
 
 import { EmployeeState } from "./contexts/Employee/EmployeeState";
-import Home from "./Components/Home";
-import Edit from "./Components/Edit";
-import AddNew from "./Components/AddNew";
+import Home from "./Home";
+import Edit from "./Edit";
+import AddNew from "./AddNew";
 import './style.css';
 import {Button} from "react-bootstrap"
 
@@ -27,7 +27,7 @@ export default function App() {
                   </Button>
                 </Link>
 
-                <Link to="/add-new" style={{"margin-left" : "10px"}}>
+                <Link to="/add-new" style={{"marginLeft" : "10px"}}>
                   <Button variant="warning" type="button">
                     Add New
                   </Button>
@@ -45,19 +45,5 @@ export default function App() {
         </Router>
       </div>
     </EmployeeState>
-  );
-}
-
-
-
-
-
-
-
-function Dashboard() {
-  return (
-    <div>
-      <h2>Dashboard</h2>
-    </div>
   );
 }

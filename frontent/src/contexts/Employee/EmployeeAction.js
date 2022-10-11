@@ -25,6 +25,7 @@ export const getEmployee = async dispatch => {
         type: "SET_EMPLOYEE",
         payload: [...result]
       });
+      setLoading(dispatch, false);
     })
     .catch(error => {
       const result = error;
@@ -37,8 +38,6 @@ export const getEmployee = async dispatch => {
         }
       });
     });
-
-    setLoading(dispatch, false);
 };
 
 
@@ -71,11 +70,8 @@ export const getSingleEmployee = async (dispatch, id) => {
 };
 
 
-
-
 // Add New Employee
 export const addEmployee = async (dispatch, newEmployee, photo) => {
-  setLoading(dispatch, true);
   const formData = new FormData();
   formData.append("name", newEmployee.name);
   formData.append("age", newEmployee.age);
@@ -87,11 +83,14 @@ export const addEmployee = async (dispatch, newEmployee, photo) => {
   await axios
     .post(`http://localhost:5000/api/employee`, formData)
     .then(res => {
-      console.log(res);
+      const result = res.data;
+      dispatch({
+        type: "SET_EMPLOYEE",
+        payload: result
+      });
     })
     .catch(error => {
       const result = error;
-
       dispatch({
         type: "SET_ERROR",
         payload: {
@@ -100,16 +99,12 @@ export const addEmployee = async (dispatch, newEmployee, photo) => {
         }
       });
     });
-
-    setLoading(dispatch, false);
 };
 
 
 
 // Edit Employee
 export const editEmployee = async (dispatch, updatedEmployee, id, photo) => {
-  setLoading(dispatch, true);
-
   const formData = new FormData();
   if(updatedEmployee.name) formData.append("name", updatedEmployee.name);
   if(updatedEmployee.age) formData.append("age", updatedEmployee.age);
@@ -134,14 +129,11 @@ export const editEmployee = async (dispatch, updatedEmployee, id, photo) => {
         }
       });
     });
-
-    setLoading(dispatch, false);
 };
 
 
 // Delete Employee
 export const deleteEmployee = async (dispatch, id) => {
-  setLoading(dispatch, true);
   await axios
     .delete(`http://localhost:5000/api/employee/${id}`)
     .then(res => {
@@ -159,5 +151,4 @@ export const deleteEmployee = async (dispatch, id) => {
       });
     });
 
-    setLoading(dispatch, false);
 };

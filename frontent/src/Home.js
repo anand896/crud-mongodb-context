@@ -1,21 +1,21 @@
 import React, { useEffect } from "react";
-import { useEmployee } from "../contexts/Employee/EmployeeState";
-import { getEmployee, setLoading } from "../contexts/Employee/EmployeeAction";
+import { useEmployee } from "./contexts/Employee/EmployeeState";
+import { getEmployee, setLoading } from "./contexts/Employee/EmployeeAction";
 import {Table, Button} from 'react-bootstrap';
-import {deleteEmployee} from "../contexts/Employee/EmployeeAction";
+import {deleteEmployee} from "./contexts/Employee/EmployeeAction";
 
 import {
-  Route,
   Link
 } from "react-router-dom";
 
 const Home = () => { 
   const [employeeState, employeeDispatch] = useEmployee();
-  const { employee, loading, error, message } = employeeState;
+  const { employee, loading } = employeeState;
 
   useEffect(() => {
+    setLoading(employeeDispatch, true);
     getEmployee(employeeDispatch);
-  }, []);
+  }, [employeeDispatch]);
 
   return (
     <>
@@ -33,8 +33,8 @@ const Home = () => {
         </tr>
       </thead>
       <tbody>
-        { !loading &&
-          employee.map((employee, index)=>{
+        { !loading && employee.length > 0 &&
+          employee?.map((employee, index)=>{
             return(
               <tr key={index}>
                 <td>{index + 1}</td>
@@ -43,10 +43,10 @@ const Home = () => {
                 <td>{employee.email}</td>
                 <td>{employee.dateOfBirth}</td>
                 <td>{employee.address}</td>
-                <td>{employee.photo}</td>
+                <td>{employee.photo && <img style={{"width":"100px"}} src={`http://localhost:5000/${employee.photo}`} alt={employee.name} /> }</td>
                 <td>
                   <Link to={`/edit/${employee._id}`}>
-                    <Button variant="warning" type="button">
+                    <Button variant="warning" type="button" style={{"marginRight":"10px"}}>
                       Edit
                     </Button>
                   </Link>
