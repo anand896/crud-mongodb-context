@@ -12,12 +12,11 @@ const Home = () => {
         age: '',
         email:'',
         dateOfBirth:'',
-        address:''
+        address:'',
+        photo: ''
     };
     const [employeeDetails, setEmployeeDetails] = useState(initialState);
     const [alertMsg, setAlertMsg] = useState({message : '', variant: ''});
-    const [photo, setPhoto] = useState(null);
-
 
     let addNewemployeeAction = (evt) => {
         if(
@@ -26,7 +25,7 @@ const Home = () => {
         ){
             setAlertMsg({...alertMsg, message:'Please fill all required fields', variant: 'danger'});
         }else{
-           addEmployee(employeeDispatch, {...employeeDetails}, photo);
+           addEmployee(employeeDispatch, {...employeeDetails});
            setEmployeeDetails(initialState);
            if(!error) setAlertMsg({...alertMsg, message:'New Employee Added Successfully', variant: 'success'});
         }
@@ -63,7 +62,7 @@ const Home = () => {
                             </Form.Group>
                             <Form.Group controlId="employee_photo">
                                 <Form.Label>Photo</Form.Label>
-                                <Form.Control type="file" onChange={(e)=>setPhoto(e.target.files[0])} placeholder="Employee Photo" />
+                                <Form.Control type="file" onChange={(e)=>setEmployeeDetails({...employeeDetails, photo:e.target.files[0]})} placeholder="Employee Photo" />
                             </Form.Group>
                             <br></br>
                             <Button variant="primary" onClick={addNewemployeeAction} type="button">Submit</Button>

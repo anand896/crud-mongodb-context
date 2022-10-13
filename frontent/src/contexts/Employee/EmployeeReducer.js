@@ -5,10 +5,21 @@ export default (state, action) => {
         ...state,
         employee: action.payload
       };
+    case "SET_EMPLOYEE_LIST":
+      return {
+        ...state,
+        employeesList: action.payload
+      };
     case "SET_ERROR":
       return {
         ...state,
         error: action.payload.error,
+        message: action.payload.message
+      };
+    case "SET_ALERT":
+      return {
+        ...state,
+        type: action.payload.type,
         message: action.payload.message
       };
     case "SET_LOADING":

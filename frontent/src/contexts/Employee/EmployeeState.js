@@ -9,7 +9,15 @@ export const useEmployee = () => {
 
 export const EmployeeState = ({ children }) => {
   const initialState = {
-    employee: {},
+    employee: {
+      name : '',
+      age: '',
+      email:'',
+      dateOfBirth:'',
+      address:'',
+      photo: null
+    },
+    employeesList: {},
     loading: true,
     error: false,
     message: ""

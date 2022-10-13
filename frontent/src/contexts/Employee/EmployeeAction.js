@@ -20,23 +20,14 @@ export const getEmployee = async dispatch => {
   await axios
     .get(`http://localhost:5000/api/employee`)
     .then(res => {
-      const result = res.data;
       dispatch({
-        type: "SET_EMPLOYEE",
-        payload: [...result]
+        type: "SET_EMPLOYEE_LIST",
+        payload: [...res.data]
       });
       setLoading(dispatch, false);
     })
     .catch(error => {
-      const result = error;
-
-      dispatch({
-        type: "SET_ERROR",
-        payload: {
-          error: true,
-          message: result
-        }
-      });
+      setError(dispatch, {status : true, message: "Something went wrong"})
     });
 };
 
@@ -55,30 +46,22 @@ export const getSingleEmployee = async (dispatch, id) => {
       });
     })
     .catch(error => {
-      const result = error;
-
-      dispatch({
-        type: "SET_ERROR",
-        payload: {
-          error: true,
-          message: result
-        }
-      });
+      setError(dispatch, {status : true, message: "Something went wrong"})
     });
-
     setLoading(dispatch, false);
 };
 
 
+
 // Add New Employee
-export const addEmployee = async (dispatch, newEmployee, photo) => {
+export const addEmployee = async (dispatch, newEmployee) => {
   const formData = new FormData();
   formData.append("name", newEmployee.name);
   formData.append("age", newEmployee.age);
   formData.append("email", newEmployee.email);
   formData.append("dateOfBirth", newEmployee.dateOfBirth);
   formData.append("address", newEmployee.address);
-  formData.append("photo", photo);
+  formData.append("photo", newEmployee.photo);
 
   await axios
     .post(`http://localhost:5000/api/employee`, formData)
@@ -86,50 +69,38 @@ export const addEmployee = async (dispatch, newEmployee, photo) => {
       const result = res.data;
       dispatch({
         type: "SET_EMPLOYEE",
-        payload: result
+        payload: result,
+        message:"Employee Added Successfully"
       });
     })
     .catch(error => {
-      const result = error;
-      dispatch({
-        type: "SET_ERROR",
-        payload: {
-          error: true,
-          message: result
-        }
-      });
+      setError(dispatch, {status : true, message: "Something went wrong"})
     });
 };
 
 
 
 // Edit Employee
-export const editEmployee = async (dispatch, updatedEmployee, id, photo) => {
+export const editEmployee = async (dispatch, updatedEmployee, id) => {
+  console.log(updatedEmployee)
   const formData = new FormData();
-  if(updatedEmployee.name) formData.append("name", updatedEmployee.name);
-  if(updatedEmployee.age) formData.append("age", updatedEmployee.age);
-  if(updatedEmployee.email) formData.append("email", updatedEmployee.email);
-  if(updatedEmployee.dateOfBirth) formData.append("dateOfBirth", updatedEmployee.dateOfBirth);
-  if(updatedEmployee.address) formData.append("address", updatedEmployee.address);
-  if(photo) formData.append("photo", photo);
+  formData.append("name", updatedEmployee.name);
+  formData.append("age", updatedEmployee.age);
+  formData.append("email", updatedEmployee.email);
+  formData.append("dateOfBirth", updatedEmployee.dateOfBirth);
+  formData.append("address", updatedEmployee.address);
+  formData.append("photo", updatedEmployee.photo);
 
   await axios
     .put(`http://localhost:5000/api/employee/${id}`, formData)
     .then(res => {
-      const result = res;
+      console.log(res)
     })
     .catch(error => {
-      const result = error;
-
-      dispatch({
-        type: "SET_ERROR",
-        payload: {
-          error: true,
-          message: result
-        }
-      });
+      setError(dispatch, {status : true, message: "Something went wrong"})
     });
 };
+
 
 
 // Delete Employee
@@ -137,18 +108,9 @@ export const deleteEmployee = async (dispatch, id) => {
   await axios
     .delete(`http://localhost:5000/api/employee/${id}`)
     .then(res => {
-      getEmployee(dispatch)
+      getEmployee(dispatch);
     })
     .catch(error => {
-      const result = error;
-
-      dispatch({
-        type: "SET_ERROR",
-        payload: {
-          error: true,
-          message: result
-        }
-      });
+      setError(dispatch, {status : true, message: "Something went wrong"})
     });
-
 };

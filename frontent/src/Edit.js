@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Button, Form } from "react-bootstrap";
 import { CustomAlert } from "./Components/form/CustomAlert";
 import { useEmployee } from "./contexts/Employee/EmployeeState";
@@ -12,17 +12,8 @@ const Edit = () => {
 
     let { userId } = useParams();
     
-    const [employeeDetails, setEmployeeDetails] = useState({
-            name : '',
-            age: '',
-            email:'',
-            dateOfBirth:'',
-            address:''
-        });
+    const [employeeDetails, setEmployeeDetails] = useState(employee);
     const [alertMsg, setAlertMsg] = useState({message : '', variant: ''});
-    const [photo, setPhoto] = useState(null);
-
-    const employee_photo = useRef(null);
 
     useEffect(() => {
         getSingleEmployee(employeeDispatch, userId);
@@ -32,13 +23,12 @@ const Edit = () => {
     }, [employee.name, employee.age, employee.email,
         employee.dateOfBirth, employee.address, employee.photo, employeeDispatch, userId]);
 
-
     let addNewemployeeAction = (evt) => {
         if(employeeDetails.name === "" || employeeDetails.age === ""
         || employeeDetails.email === ""){
             setAlertMsg({...alertMsg, message:'Please fill all required fields', variant: 'danger'});
         }else{
-            editEmployee(employeeDispatch, employeeDetails, userId, photo);
+            editEmployee(employeeDispatch, employeeDetails, userId);
             if(!error) setAlertMsg({...alertMsg, message:'Updated Successfully', variant: 'success'});
         }
     }
@@ -74,7 +64,7 @@ const Edit = () => {
                             </Form.Group>
                             <Form.Group controlId="employee_photo">
                                 <Form.Label>Photo</Form.Label>
-                                <Form.Control type="file" ref={employee_photo} onChange={(e)=>setPhoto(e.target.files[0])} placeholder="Employee Photo" />
+                                <Form.Control type="file" onChange={(e)=>setEmployeeDetails({...employeeDetails, photo: e.target.files[0]})} placeholder="Employee Photo" />
                             </Form.Group>
                             <Button variant="primary" onClick={addNewemployeeAction} type="button">Submit</Button>
                         </Form>
